@@ -17,7 +17,7 @@ If release name contains chart name it will be used as a full name.
 {{- else -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
 {{- if contains $name .Release.Name -}}
-{{- .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- printf .Release.Name | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
@@ -25,21 +25,19 @@ If release name contains chart name it will be used as a full name.
 {{- end -}}
 
 {{/*
-Create chart name and version as used by the chart label.
+Generate chart secret name
 */}}
-{{- define "mysql.chart" -}}
-{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
+{{- define "mysql.secretName" -}}
+{{ default (include "mysql.fullname" .) .Values.existingSecret }}
 {{- end -}}
 
 {{/*
-Common labels
+Create the name of the service account to use
 */}}
-{{- define "mysql.labels" -}}
-app.kubernetes.io/name: {{ include "mysql.name" . }}
-helm.sh/chart: {{ include "mysql.chart" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-{{- end }}
-app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- define "mysql.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create -}}
+{{ default (include "mysql.fullname" .) .Values.serviceAccount.name }}
+{{- else -}}
+{{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
 {{- end -}}
