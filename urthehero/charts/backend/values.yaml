@@ -5,17 +5,19 @@
 replicaCount: 1
 
 image:
-  repository: mysql
-  tag: 8.0.19
+  repository: localhost:5000/urthehero-back
+  tag: 0.1.1-SNAPSHOT
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
 nameOverride: ""
-fullnameOverride: "urthehero-mysql"
+fullnameOverride: "urthehero-backend"
 
 service:
-  type: ClusterIP
-  port: 80
+  type: NodePort
+  port: 8080
+
+httpServiceName: http
 
 ingress:
   enabled: false
