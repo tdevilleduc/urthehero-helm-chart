@@ -28,10 +28,19 @@ spec:
             - name: http
               containerPort: 80
               protocol: TCP
+          {{- if .Values.livenessProbe.enabled -}}
+          livenessProbe:
+            initialDelaySeconds: 5
+            timeoutSeconds: 10
+            tcpSocket:
+              port: {{ .Values.defaultHttpServiceName }}
+          {{- end }}
+          {{- if .Values.readinessProbe.enabled -}}
           readinessProbe:
             httpGet:
-              path: /
-              port: http
+              path: {{ .Values.defaultReadinessProbePath}}
+              port: {{ .Values.defaultHttpServiceName }}
+          {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

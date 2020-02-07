@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: localhost:5000/urthehero-back
+  repository: docker.io/thomasdevilleduc/urthehero-back
   tag: 0.1.1-SNAPSHOT
   pullPolicy: IfNotPresent
 
@@ -32,6 +32,16 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
+
+
+defaultHttpServiceName: http
+#defaultReadinessProbePath: /actuator/health
+defaultReadinessProbePath: /
+
+livenessProbe:
+  enabled: false
+readinessProbe:
+  enabled: false
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
